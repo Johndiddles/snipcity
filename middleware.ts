@@ -23,3 +23,7 @@ export default async function middleware(request: NextRequest) {
 
   return NextResponse.next();
 }
+
+export const config = {
+  unstable_allowDynamic: ["./db/connectToDb.ts", "./db/schema/User.ts"],
+};

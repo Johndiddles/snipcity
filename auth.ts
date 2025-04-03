@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import Github from "next-auth/providers/github";
-import { createUser, CreateUserPayload } from "./db/models/createUser";
+import { CreateUserPayload } from "./db/models/createUser";
 
 export const { signIn, signOut, handlers, auth } = NextAuth({
   session: {
@@ -21,9 +21,16 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
         profileImage: (profile.avatar_url as string) || "",
       };
 
-      const { user: updatedUser, error } = await createUser(
-        userToDb as CreateUserPayload
-      );
+      const response = await fetch("/api/user/create", {
+        method: "POST",
+        body: JSON.stringify(userToDb),
+      });
+
+      const { updatedUser, error } = await response.json();
+
+      // const { user: updatedUser, error } = await createUser(
+      //   userToDb as CreateUserPayload
+      // );
 
       if (error) {
         console.error({ error });

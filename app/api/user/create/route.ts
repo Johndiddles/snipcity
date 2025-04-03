@@ -1,5 +1,6 @@
 import connectToDB from "@/db/connectToDb";
-import User from "@/db/schema/User";
+import { createUser, CreateUserPayload } from "@/db/models/createUser";
+// import User from "@/db/schema/User";
 
 export async function POST(req: Request) {
   await connectToDB();
@@ -8,18 +9,25 @@ export async function POST(req: Request) {
   console.log({ payload });
 
   try {
-    const user = await User.findOneAndUpdate(
-      { email: payload.email, authProvider: payload.authProvider },
-      payload,
+    const { user, error } = await createUser(payload as CreateUserPayload);
+    // const user = await User.findOneAndUpdate(
+    //   { email: payload.email, authProvider: payload.authProvider },
+    //   payload,
+    //   {
+    //     upsert: true,
+    //   }
+    // );
+
+    // console.log({ user });
+    if (error) {
+      return Response.json({ error }, { status: 400 });
+    }
+    return Response.json(
+      { user },
       {
-        upsert: true,
+        status: 201,
       }
     );
-
-    console.log({ user });
-    return Response.json(user, {
-      status: 201,
-    });
   } catch (error) {
     return handleError(error);
   }
