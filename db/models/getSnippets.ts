@@ -8,6 +8,7 @@ export const getSnippets = async () => {
     (await Snippet.find({ isPublic: true }).populate({
       path: "author",
       model: User,
+      select: "username email profileImage _id",
     })) || []
   );
 };
