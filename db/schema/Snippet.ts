@@ -12,6 +12,7 @@ export interface ISnippet extends Document {
   comments: IComment["_id"][];
   upvotes: number;
   downvotes: number;
+  tags?: string;
 }
 
 const snippetSchema: Schema<ISnippet> = new Schema(
@@ -27,6 +28,7 @@ const snippetSchema: Schema<ISnippet> = new Schema(
       required: true,
     },
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+    tags: { type: String },
     upvotes: { type: Number, default: 0 },
     downvotes: { type: Number, default: 0 },
   },

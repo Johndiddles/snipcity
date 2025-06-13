@@ -21,12 +21,15 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
         profileImage: (profile.avatar_url as string) || "",
       };
 
-      const response = await fetch("/api/user/create", {
+      const response = await fetch(`${process.env.BASE_URL}/api/user/create`, {
         method: "POST",
         body: JSON.stringify(userToDb),
       });
 
-      const { updatedUser, error } = await response.json();
+      const data = await response.json();
+      console.log({ data });
+      const { user: updatedUser, error } = data;
+      console.log({ updatedUser, error });
 
       // const { user: updatedUser, error } = await createUser(
       //   userToDb as CreateUserPayload
@@ -37,7 +40,7 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
         return `/signin/error?error=${error}`;
       }
 
-      console.log({ updatedUser });
+      // console.log({ updatedUser });
       user.id = updatedUser!._id?.toString();
       user.image = updatedUser?.profileImage;
       user.name = updatedUser?.username;

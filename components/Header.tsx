@@ -1,58 +1,35 @@
-import { auth } from "@/auth";
 import Container from "./Container";
-import SignInButton from "./SignInButton";
-import Image from "next/image";
+import SnippetSearch from "./SnippetSearch";
 import Link from "next/link";
+import NavActions from "./NavActions";
 
-const Header = async () => {
-  const session = await auth();
-  console.log({ session });
+const Header = () => {
   return (
-    <div className="bg-slate-900 text-gray-200 w-full">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <Container>
-        <div className="flex justify-between items-center py-4">
-          <Link href="/">
-            <div className="text-3xl font-bold">Snippit</div>
+        <div className="flex h-14 md:h-16 items-center justify-between px-4">
+          {/* Logo and Brand */}
+          <Link href="/" className="flex items-center gap-2 md:gap-4">
+            <div className="h-6 w-6 md:h-8 md:w-8 rounded-lg bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-xs md:text-sm">
+                {"</>"}
+              </span>
+            </div>
+            <h1 className="text-lg md:text-xl font-bold hidden sm:block">
+              SnipCity
+            </h1>
+            <h1 className="text-lg md:text-xl font-bold sm:hidden">SC</h1>
           </Link>
 
-          <div className="flex gap-10 items-center">
-            <Link
-              href={"/discover"}
-              className="underline underline-offset-8 cursor-pointer duration-300 ease-in-out hover:text-green-500"
-            >
-              Explore
-            </Link>
+          {/* Desktop Search */}
+          <div className="hidden md:flex flex-1 max-w-md mx-6">
+            <SnippetSearch />
+          </div>
 
-            {session && (
-              <Link
-                href="/snippets/create"
-                className="underline underline-offset-8 cursor-pointer duration-300 ease-in-out hover:text-green-500"
-              >
-                New Snippet
-              </Link>
-            )}
-          </div>
-          <div>
-            {session ? (
-              <div className="flex items-center gap-4">
-                <Link href={"/profile"} passHref>
-                  <button className="rounded-full overflow-hidden w-12 h-12 cursor-pointer">
-                    <Image
-                      src={session.user?.image || ""}
-                      alt="avatar"
-                      width={48}
-                      height={48}
-                    />
-                  </button>
-                </Link>
-              </div>
-            ) : (
-              <SignInButton />
-            )}
-          </div>
+          <NavActions />
         </div>
       </Container>
-    </div>
+    </header>
   );
 };
 

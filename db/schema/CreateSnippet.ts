@@ -13,6 +13,7 @@ export const createSnippetFormSchema = z.object({
     }),
   language: z.string({ required_error: "Language is required!" }),
   isPublic: z.boolean(),
+  tags: z.string().optional(),
 });
 
 export type CreateSnippetFormType = z.infer<typeof createSnippetFormSchema>;
