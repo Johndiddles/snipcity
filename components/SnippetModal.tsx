@@ -1,13 +1,12 @@
 import {
-  X,
   Heart,
   MessageCircle,
   Share,
   Copy,
-  Edit,
+  // Edit,
   // Trash,
 } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -47,8 +46,6 @@ const SnippetModal = ({ snippet, isOpen, onClose }: SnippetModalProps) => {
     },
   ]);
 
-  if (!snippet) return null;
-
   const handleVote = () => {
     setIsLiked(!isLiked);
     setVotes(isLiked ? votes - 1 : votes + 1);
@@ -73,14 +70,21 @@ const SnippetModal = ({ snippet, isOpen, onClose }: SnippetModalProps) => {
     setComment("");
   };
 
+  if (!snippet) return null;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0">
-        <div className="flex flex-col h-full">
+      <div className="hidden">
+        <DialogTitle>{snippet.title}</DialogTitle>
+      </div>
+      <DialogContent className="w-full max-w-sm xs:max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-5xl max-h-[90vh] p-0 overflow-x-hidden">
+        <div className="w-full flex flex-col h-full overflow-x-hidden">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b">
             <div className="flex-1">
-              <h2 className="text-2xl font-bold">{snippet.title}</h2>
+              <h2 className="text-2xl text-wrap w-[50%] font-bold">
+                {snippet.title}
+              </h2>
               <p className="text-muted-foreground mt-1">
                 {snippet.description}
               </p>
@@ -100,15 +104,12 @@ const SnippetModal = ({ snippet, isOpen, onClose }: SnippetModalProps) => {
                 </span>
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
           </div>
 
-          <div className="flex flex-1 overflow-hidden">
+          <div className="w-full flex flex-col md:flex-row">
             {/* Code Section */}
-            <div className="flex-1 flex flex-col">
-              <div className="flex items-center justify-between p-4 border-b">
+            <div className="min-w-0 w-full max-w-full flex-1 flex flex-col">
+              <div className="flex flex-wrap space-y-4 items-center justify-between p-4 border-b">
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary">{snippet.language}</Badge>
                   {tags.map((tag: string) => (
@@ -122,26 +123,20 @@ const SnippetModal = ({ snippet, isOpen, onClose }: SnippetModalProps) => {
                     <Copy className="h-4 w-4 mr-2" />
                     Copy
                   </Button>
-                  <Button variant="outline" size="sm">
-                    <Edit className="h-4 w-4 mr-2" />
-                    Fork
-                  </Button>
                 </div>
               </div>
 
-              <div className="flex-1 overflow-auto p-4">
-                <pre className="bg-muted rounded-lg p-4 font-mono text-sm overflow-auto">
-                  {/* <code>{snippet.code}</code> */}
-                  <SyntaxHighlighter
-                    language={snippet.language.toLowerCase()}
-                    style={vscDarkPlus}
-                    showLineNumbers={true}
-                    wrapLongLines={true}
-                    className="w-full"
-                  >
-                    {snippet.code}
-                  </SyntaxHighlighter>
-                </pre>
+              <div className="w-full">
+                <SyntaxHighlighter
+                  language={snippet.language.toLowerCase()}
+                  style={vscDarkPlus}
+                  showLineNumbers={true}
+                  wrapLines={true}
+                  wrapLongLines={true}
+                  className="w-full max-h-[320px] sm:max-h-[480px] lg:max-h-[640px]"
+                >
+                  {snippet.code}
+                </SyntaxHighlighter>
               </div>
 
               {/* Actions */}
@@ -171,7 +166,7 @@ const SnippetModal = ({ snippet, isOpen, onClose }: SnippetModalProps) => {
             </div>
 
             {/* Comments Section */}
-            <div className="w-80 border-l flex flex-col">
+            <div className="w-full md:w-80 border-l flex flex-col">
               <div className="p-4 border-b">
                 <h3 className="font-semibold">Comments</h3>
               </div>
