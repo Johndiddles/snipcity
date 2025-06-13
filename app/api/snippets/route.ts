@@ -3,6 +3,7 @@ import { buildPaginatedFilter } from "@/db/buildFilters";
 import connectToDB from "@/db/connectToDb";
 import { createSnippet } from "@/db/models/createSnippet";
 import Snippet, { ISnippet } from "@/db/schema/Snippet";
+import UserSchema from "@/db/schema/User";
 import { User } from "@/types/user";
 
 export async function GET() {
@@ -16,7 +17,11 @@ export async function GET() {
       query: {},
     });
     const snippets: ISnippet[] = await Snippet.find(filter)
-      .populate({ path: "author", select: "username email profileImage _id" })
+      .populate({
+        path: "author",
+        select: "username email profileImage _id",
+        model: UserSchema,
+      })
       .skip(options.skip)
       .limit(options.limit)
       .sort((options.sort as Record<string, 1 | -1>) || { createdAt: -1 });
