@@ -1,4 +1,3 @@
-
 import { Filter, Code, Globe, Lock, Calendar, User } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -6,29 +5,38 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
+type Filters = {
+  languages: string[];
+  visibility: string;
+  sortBy: string;
+};
 interface FilterSidebarProps {
-  filters: {
-    languages: string[];
-    visibility: string;
-    sortBy: string;
-  };
-  onFiltersChange: (filters: any) => void;
+  filters: Filters;
+  onFiltersChange: (filters: Filters) => void;
 }
 
 const FilterSidebar = ({ filters, onFiltersChange }: FilterSidebarProps) => {
   const languages = [
-    "JavaScript", "TypeScript", "Python", "Java", "C++", 
-    "React", "Vue", "Angular", "Node.js", "PHP"
+    "JavaScript",
+    "TypeScript",
+    "Python",
+    "Java",
+    "C++",
+    "React",
+    "Vue",
+    "Angular",
+    "Node.js",
+    "PHP",
   ];
 
   const handleLanguageChange = (language: string, checked: boolean) => {
-    const newLanguages = checked 
+    const newLanguages = checked
       ? [...filters.languages, language]
-      : filters.languages.filter(l => l !== language);
-    
+      : filters.languages.filter((l) => l !== language);
+
     onFiltersChange({
       ...filters,
-      languages: newLanguages
+      languages: newLanguages,
     });
   };
 
@@ -53,7 +61,7 @@ const FilterSidebar = ({ filters, onFiltersChange }: FilterSidebarProps) => {
                 <Checkbox
                   id={language}
                   checked={filters.languages.includes(language)}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={(checked) =>
                     handleLanguageChange(language, checked as boolean)
                   }
                 />
@@ -81,18 +89,26 @@ const FilterSidebar = ({ filters, onFiltersChange }: FilterSidebarProps) => {
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="all" id="all" />
-              <Label htmlFor="all" className="text-sm">All Snippets</Label>
+              <Label htmlFor="all" className="text-sm">
+                All Snippets
+              </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="public" id="public" />
-              <Label htmlFor="public" className="text-sm flex items-center gap-1">
+              <Label
+                htmlFor="public"
+                className="text-sm flex items-center gap-1"
+              >
                 <Globe className="h-3 w-3" />
                 Public
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="private" id="private" />
-              <Label htmlFor="private" className="text-sm flex items-center gap-1">
+              <Label
+                htmlFor="private"
+                className="text-sm flex items-center gap-1"
+              >
                 <Lock className="h-3 w-3" />
                 Private
               </Label>
@@ -116,19 +132,28 @@ const FilterSidebar = ({ filters, onFiltersChange }: FilterSidebarProps) => {
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="newest" id="newest" />
-              <Label htmlFor="newest" className="text-sm">Newest First</Label>
+              <Label htmlFor="newest" className="text-sm">
+                Newest First
+              </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="oldest" id="oldest" />
-              <Label htmlFor="oldest" className="text-sm">Oldest First</Label>
+              <Label htmlFor="oldest" className="text-sm">
+                Oldest First
+              </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="popular" id="popular" />
-              <Label htmlFor="popular" className="text-sm">Most Popular</Label>
+              <Label htmlFor="popular" className="text-sm">
+                Most Popular
+              </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="author" id="author" />
-              <Label htmlFor="author" className="text-sm flex items-center gap-1">
+              <Label
+                htmlFor="author"
+                className="text-sm flex items-center gap-1"
+              >
                 <User className="h-3 w-3" />
                 By Author
               </Label>
