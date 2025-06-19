@@ -4,7 +4,7 @@ import { ISnippet } from "./Snippet";
 
 export interface IVote extends Document {
   snippet: ISnippet["_id"];
-  user: IUser["_id"];
+  user: IUser["_id"] | IUser;
   voteType: "upvote" | "downvote";
 }
 
@@ -15,7 +15,11 @@ const voteSchema: Schema<IVote> = new Schema(
       ref: "Snippet",
       required: true,
     },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     voteType: { type: String, enum: ["upvote", "downvote"], required: true },
   },
   { timestamps: true }

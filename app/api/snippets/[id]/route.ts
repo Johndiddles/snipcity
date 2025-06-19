@@ -6,10 +6,12 @@ import { NextRequest } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  console.log({ req });
   await connectToDB();
   const { id } = await params;
+  console.log({ id });
 
   const user = await auth();
   try {

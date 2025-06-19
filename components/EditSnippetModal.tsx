@@ -20,10 +20,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { languages } from "@/mockData/languages";
-import { ISnippet } from "@/db/schema/Snippet";
-import { Document } from "mongoose";
+import { Snippet } from "@/types/snippet";
 
-type Snippet = Omit<ISnippet, keyof Document>;
 interface EditSnippetModalProps {
   snippet: Snippet;
   isOpen: boolean;

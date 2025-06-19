@@ -51,7 +51,7 @@ export const onCreateSnippetAction: (
     await createSnippet({
       ...parsedData.data,
       code: parsedData.data.code.trim().toString(),
-      author: session?.user?.id,
+      author: session?.user?.id as string,
     });
 
     console.log("Snippet created successfully");

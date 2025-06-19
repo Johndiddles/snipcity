@@ -15,6 +15,8 @@ export interface ISnippet extends Document {
   tags?: string;
 }
 
+export type Snippet = Omit<ISnippet, keyof Document>;
+
 const snippetSchema: Schema<ISnippet> = new Schema(
   {
     title: { type: String, required: true },

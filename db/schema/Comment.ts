@@ -4,7 +4,7 @@ import { IUser } from "./User";
 
 export interface IComment extends Document {
   snippet: ISnippet["_id"];
-  author: IUser["_id"];
+  author: IUser["_id"] | IUser;
   commentText: string;
 }
 

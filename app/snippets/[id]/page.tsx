@@ -19,11 +19,12 @@ import EditSnippetModal from "@/components/EditSnippetModal";
 import { comments } from "@/mockData/comments";
 import { useQuery } from "@tanstack/react-query";
 import { Snippet } from "@/types/snippet";
-import { ISnippet } from "@/db/schema/Snippet";
+// import { ISnippet } from "@/db/schema/Snippet";
 import Container from "@/components/Container";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { useSession } from "next-auth/react";
+import SingleSnippetViewSkeleton from "@/components/SingleSnippetSkeletonLoader";
 
 const SnippetView = () => {
   const { id } = useParams();
@@ -46,7 +47,8 @@ const SnippetView = () => {
   console.log({ data, isPending });
 
   if (isPending) {
-    return <p>Loading snippets...</p>;
+    // return <p>Loading snippets...</p>;
+    return <SingleSnippetViewSkeleton />;
   }
 
   if (!data || !data.snippet) {
@@ -90,7 +92,7 @@ const SnippetView = () => {
     setComment("");
   };
 
-  const handleSnippetUpdated = (updatedSnippet: ISnippet) => {
+  const handleSnippetUpdated = (updatedSnippet: Snippet) => {
     console.log({ updatedSnippet });
     // setSnippet(updatedSnippet);
     toast.success("Snippet updated successfully!");

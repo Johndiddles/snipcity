@@ -4,7 +4,7 @@ export type Snippet = {
   description: string;
   code: string;
   language: string;
-  isPublic: true;
+  isPublic: boolean;
   author: {
     _id: string;
     username: string;
