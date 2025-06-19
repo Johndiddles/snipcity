@@ -3,12 +3,12 @@ import { buildPaginatedFilter } from "@/db/buildFilters";
 import connectToDB from "@/db/connectToDb";
 import { createSnippet } from "@/db/models/createSnippet";
 import Snippet, { ISnippet } from "@/db/schema/Snippet";
-import UserSchema from "@/db/schema/User";
+// import UserSchema from "@/db/schema/User";
 import { User } from "@/types/user";
 
 export async function GET() {
   const authUser = await auth();
-  console.log({ authUser });
+  // console.log({ authUser });
   await connectToDB();
 
   try {
@@ -20,7 +20,13 @@ export async function GET() {
       .populate({
         path: "author",
         select: "username email profileImage _id",
-        model: UserSchema,
+      })
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author",
+          select: "username email profileImage _id",
+        },
       })
       .skip(options.skip)
       .limit(options.limit)

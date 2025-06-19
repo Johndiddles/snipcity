@@ -37,5 +37,38 @@ const snippetSchema: Schema<ISnippet> = new Schema(
   { timestamps: true }
 );
 
+const populateFields = (schema: mongoose.Query<ISnippet[], ISnippet>) => {
+  schema.populate([
+    { path: "author", select: "username email _id profileImage" }, // populate snippet author
+    {
+      path: "comments",
+      populate: {
+        path: "author",
+        select: "username email _id profileImage", // populate author inside each comment
+      },
+    },
+  ]);
+};
+
+snippetSchema.pre(
+  "find",
+  function (this: mongoose.Query<ISnippet[], ISnippet>, next) {
+    console.log("populating");
+    populateFields(this);
+
+    next();
+  }
+);
+
+snippetSchema.pre(
+  "findOne",
+  function (this: mongoose.Query<ISnippet[], ISnippet>, next) {
+    console.log("populating");
+    populateFields(this);
+
+    next();
+  }
+);
+
 export default mongoose?.models?.Snippet ||
   mongoose.model<ISnippet>("Snippet", snippetSchema);

@@ -1,17 +1,8 @@
-import {
-  Heart,
-  MessageCircle,
-  Share,
-  Copy,
-  // Edit,
-  // Trash,
-} from "lucide-react";
+import { Heart, MessageCircle, Share, Copy } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-// import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Snippet } from "@/types/snippet";
@@ -19,6 +10,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { comments } from "@/mockData/comments";
 import moment from "moment";
+import Comments from "./Comments";
 
 interface SnippetModalProps {
   snippet: Snippet;
@@ -30,7 +22,6 @@ const SnippetModal = ({ snippet, isOpen, onClose }: SnippetModalProps) => {
   const tags = snippet?.tags?.split(",") || [];
   const [isLiked, setIsLiked] = useState(false);
   const [votes, setVotes] = useState(snippet?.upvotes || 0);
-  const [comment, setComment] = useState("");
 
   const handleVote = () => {
     setIsLiked(!isLiked);
@@ -47,13 +38,6 @@ const SnippetModal = ({ snippet, isOpen, onClose }: SnippetModalProps) => {
       `${window.location.origin}/snippets/${snippet._id}`
     );
     toast.success("Link copied to clipboard!");
-  };
-
-  const handleComment = () => {
-    if (!comment.trim()) return;
-    // Mock comment submission
-    toast.success("Comment added!");
-    setComment("");
   };
 
   if (!snippet) return null;
@@ -152,51 +136,7 @@ const SnippetModal = ({ snippet, isOpen, onClose }: SnippetModalProps) => {
             </div>
 
             {/* Comments Section */}
-            <div className="w-full md:w-80 border-l flex flex-col">
-              <div className="p-4 border-b">
-                <h3 className="font-semibold">Comments</h3>
-              </div>
-
-              <div className="flex-1 overflow-auto p-4 space-y-4">
-                {comments.map((comment) => (
-                  <div key={comment.id} className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-6 w-6">
-                        <AvatarImage src={comment.avatar} />
-                        <AvatarFallback>
-                          {comment.author.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="text-sm font-medium">
-                        {comment.author}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {comment.createdAt}
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground pl-8">
-                      {comment.content}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="p-4 border-t space-y-3">
-                <Textarea
-                  placeholder="Add a comment..."
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  className="min-h-[80px]"
-                />
-                <Button
-                  onClick={handleComment}
-                  disabled={!comment.trim()}
-                  className="w-full"
-                >
-                  Post Comment
-                </Button>
-              </div>
-            </div>
+            <Comments snippet={snippet} />
           </div>
         </div>
       </DialogContent>

@@ -5,7 +5,7 @@ import { IUser } from "./User";
 export interface IComment extends Document {
   snippet: ISnippet["_id"];
   author: IUser["_id"] | IUser;
-  commentText: string;
+  comment: string;
 }
 
 const commentSchema: Schema<IComment> = new Schema(
@@ -20,9 +20,17 @@ const commentSchema: Schema<IComment> = new Schema(
       ref: "User",
       required: true,
     },
-    commentText: { type: String, required: true },
+    comment: { type: String, required: true },
   },
   { timestamps: true }
+);
+
+commentSchema.pre(
+  /^find/,
+  function (this: mongoose.Query<IComment[], IComment>, next) {
+    this.populate("author");
+    next();
+  }
 );
 
 export default mongoose.models.Comment ||

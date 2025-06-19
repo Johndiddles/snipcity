@@ -1,3 +1,5 @@
+import { Comment } from "./comment";
+
 export type Snippet = {
   _id: string;
   title: string;
@@ -11,7 +13,7 @@ export type Snippet = {
     email: string;
     profileImage: string;
   };
-  comments: [];
+  comments: Comment[];
   upvotes: number;
   downvotes: number;
   tags?: string;

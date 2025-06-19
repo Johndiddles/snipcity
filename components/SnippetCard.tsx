@@ -171,7 +171,7 @@ const SnippetCard = ({ snippet, onView }: SnippetCardProps) => {
             </Button>
             <Button variant="ghost" size="sm" className="gap-1">
               <MessageCircle className="h-4 w-4" />
-              {snippet.comments}
+              {snippet.comments?.length}
             </Button>
           </div>
           <div className="flex items-center gap-2">

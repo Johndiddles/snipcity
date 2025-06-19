@@ -8,18 +8,25 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  console.log({ req });
+  // console.log({ req });
   await connectToDB();
   const { id } = await params;
-  console.log({ id });
+  // console.log({ id });
 
   const user = await auth();
   try {
-    const snippet: ISnippet | null = await Snippet.findById(id).populate({
-      path: "author",
-      model: "User",
-      select: "username email profileImage _id",
-    });
+    const snippet: ISnippet | null = await Snippet.findById(id)
+      .populate({
+        path: "author",
+        select: "username email profileImage _id",
+      })
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author",
+          select: "username email profileImage _id",
+        },
+      });
     if (
       !snippet ||
       (!snippet.isPublic &&
