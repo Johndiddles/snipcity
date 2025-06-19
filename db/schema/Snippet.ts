@@ -8,7 +8,7 @@ export interface ISnippet extends Document {
   code: string;
   language: string;
   isPublic: boolean;
-  author: IUser["_id"];
+  author: IUser["_id"] | IUser;
   comments: IComment["_id"][];
   upvotes: number;
   downvotes: number;

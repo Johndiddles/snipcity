@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { Snippet } from "@/types/snippet";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import { comments } from "@/mockData/comments";
 
 interface SnippetModalProps {
   snippet: Snippet;
@@ -29,22 +30,6 @@ const SnippetModal = ({ snippet, isOpen, onClose }: SnippetModalProps) => {
   const [isLiked, setIsLiked] = useState(false);
   const [votes, setVotes] = useState(snippet?.upvotes || 0);
   const [comment, setComment] = useState("");
-  const [comments] = useState([
-    {
-      id: 1,
-      author: "Alice Chen",
-      avatar: "/placeholder.svg",
-      content: "Great snippet! This will save me a lot of time.",
-      createdAt: "2 hours ago",
-    },
-    {
-      id: 2,
-      author: "Bob Smith",
-      avatar: "/placeholder.svg",
-      content: "Thanks for sharing. Could you add error handling?",
-      createdAt: "1 day ago",
-    },
-  ]);
 
   const handleVote = () => {
     setIsLiked(!isLiked);
@@ -58,7 +43,7 @@ const SnippetModal = ({ snippet, isOpen, onClose }: SnippetModalProps) => {
 
   const handleShare = () => {
     navigator.clipboard.writeText(
-      `${window.location.origin}/snippet/${snippet._id}`
+      `${window.location.origin}/snippets/${snippet._id}`
     );
     toast.success("Link copied to clipboard!");
   };
