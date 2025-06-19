@@ -20,12 +20,15 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { languages } from "@/mockData/languages";
+import { ISnippet } from "@/db/schema/Snippet";
+import { Document } from "mongoose";
 
+type Snippet = Omit<ISnippet, keyof Document>;
 interface EditSnippetModalProps {
-  snippet: any;
+  snippet: Snippet;
   isOpen: boolean;
   onClose: () => void;
-  onSnippetUpdated: (snippet: any) => void;
+  onSnippetUpdated: (snippet: Snippet) => void;
 }
 
 const EditSnippetModal = ({
@@ -80,8 +83,8 @@ const EditSnippetModal = ({
       description,
       code,
       language,
-      isPrivate: visibility === "private",
-      tags,
+      isPublic: visibility === "isPublic",
+      tags: tags.join(", "),
     };
 
     onSnippetUpdated(updatedSnippet);
