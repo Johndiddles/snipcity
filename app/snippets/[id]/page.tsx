@@ -25,6 +25,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { useSession } from "next-auth/react";
 import SingleSnippetViewSkeleton from "@/components/SingleSnippetSkeletonLoader";
+import moment from "moment";
 
 const SnippetView = () => {
   const { id } = useParams();
@@ -145,7 +146,7 @@ const SnippetView = () => {
                 <div>
                   <p className="font-medium">{snippet.author.username}</p>
                   <p className="text-sm text-muted-foreground">
-                    {new Date(snippet.createdAt).toISOString()}
+                    {moment(snippet.createdAt).fromNow()}
                   </p>
                 </div>
               </div>
@@ -271,128 +272,3 @@ const SnippetView = () => {
 };
 
 export default SnippetView;
-
-// //<div className="container py-6">
-//           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-//             {/* Main Content */}
-//             <div className="lg:col-span-2 space-y-6">
-//               {/* Author Info */}
-//               <div className="flex items-center gap-3">
-//                 <Avatar className="h-8 w-8">
-//                   <AvatarImage src={snippet.author.profileImage} />
-//                   <AvatarFallback>
-//                     {snippet.author.username.charAt(0)}
-//                   </AvatarFallback>
-//                 </Avatar>
-//                 <div>
-//                   <p className="font-medium">{snippet.author.username}</p>
-//                   <p className="text-sm text-muted-foreground">
-//                     {new Date(snippet.createdAt).toISOString()}
-//                   </p>
-//                 </div>
-//               </div>
-
-//               {/* Tags and Language */}
-//               <div className="flex items-center gap-2 flex-wrap">
-//                 <Badge variant="secondary">{snippet.language}</Badge>
-//                 {snippet.tags?.split(",").map((tag: string) => (
-//                   <Badge key={tag} variant="outline" className="text-xs">
-//                     {tag}
-//                   </Badge>
-//                 ))}
-//               </div>
-
-//               {/* Code Block */}
-//               <div className="border rounded-lg overflow-hidden">
-//                 <div className="flex items-center justify-between px-4 py-3 border-b bg-muted/50">
-//                   <span className="text-sm font-medium">
-//                     {snippet.language}
-//                   </span>
-//                   <Button variant="outline" size="sm" onClick={handleCopy}>
-//                     <Copy className="h-4 w-4 mr-2" />
-//                     Copy
-//                   </Button>
-//                 </div>
-//                 <div className="p-4 overflow-x-auto">
-//                   <pre className="font-mono text-sm">
-//                     <code>{snippet.code}</code>
-//                   </pre>
-//                 </div>
-//               </div>
-
-//               {/* Actions */}
-//               <div className="flex items-center justify-between">
-//                 <div className="flex items-center gap-4">
-//                   <Button
-//                     variant="ghost"
-//                     size="sm"
-//                     className={`gap-2 ${isLiked ? "text-red-500" : ""}`}
-//                     onClick={handleVote}
-//                   >
-//                     <Heart
-//                       className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`}
-//                     />
-//                     {votes} votes
-//                   </Button>
-//                   <Button variant="ghost" size="sm" className="gap-2">
-//                     <MessageCircle className="h-4 w-4" />
-//                     {comments.length} comments
-//                   </Button>
-//                 </div>
-//                 <Button variant="ghost" size="sm" onClick={handleShare}>
-//                   <Share className="h-4 w-4 mr-2" />
-//                   Share
-//                 </Button>
-//               </div>
-//             </div>
-
-//             {/* Comments Sidebar */}
-//             <div className="space-y-6">
-//               <div className="border rounded-lg">
-//                 <div className="p-4 border-b">
-//                   <h3 className="font-semibold">Comments</h3>
-//                 </div>
-
-//                 <div className="p-4 space-y-4 max-h-96 overflow-y-auto">
-//                   {comments.map((comment) => (
-//                     <div key={comment.id} className="space-y-2">
-//                       <div className="flex items-center gap-2">
-//                         <Avatar className="h-6 w-6">
-//                           <AvatarImage src={comment.avatar} />
-//                           <AvatarFallback>
-//                             {comment.author.charAt(0)}
-//                           </AvatarFallback>
-//                         </Avatar>
-//                         <span className="text-sm font-medium">
-//                           {comment.author}
-//                         </span>
-//                         <span className="text-xs text-muted-foreground">
-//                           {comment.createdAt}
-//                         </span>
-//                       </div>
-//                       <p className="text-sm text-muted-foreground pl-8">
-//                         {comment.content}
-//                       </p>
-//                     </div>
-//                   ))}
-//                 </div>
-
-//                 <div className="p-4 border-t space-y-3">
-//                   <Textarea
-//                     placeholder="Add a comment..."
-//                     value={comment}
-//                     onChange={(e) => setComment(e.target.value)}
-//                     className="min-h-[80px]"
-//                   />
-//                   <Button
-//                     onClick={handleComment}
-//                     disabled={!comment.trim()}
-//                     className="w-full"
-//                   >
-//                     Post Comment
-//                   </Button>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>

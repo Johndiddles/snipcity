@@ -18,6 +18,7 @@ import { Snippet } from "@/types/snippet";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { comments } from "@/mockData/comments";
+import moment from "moment";
 
 interface SnippetModalProps {
   snippet: Snippet;
@@ -85,7 +86,7 @@ const SnippetModal = ({ snippet, isOpen, onClose }: SnippetModalProps) => {
                 </span>
                 <span className="text-xs text-muted-foreground">•</span>
                 <span className="text-xs text-muted-foreground">
-                  {new Date(snippet.createdAt).toISOString()}
+                  {moment(snippet.createdAt).fromNow()}
                 </span>
               </div>
             </div>
