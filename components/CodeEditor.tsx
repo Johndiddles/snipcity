@@ -16,7 +16,6 @@ interface ICodeEditor {
   onChange: (code: string) => void;
 }
 const CodeEditor = ({ language, code, onChange }: ICodeEditor) => {
-  console.log({ language, code });
   return (
     <AceEditor
       mode={language}

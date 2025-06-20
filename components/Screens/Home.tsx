@@ -11,8 +11,10 @@ import { Snippet } from "@/types/snippet";
 import { useQuery } from "@tanstack/react-query";
 import SkeletonLoader from "../SkeletonLoader";
 import { QUERY_KEYS } from "@/constants/queries";
+import { useRouter } from "next/navigation";
 
 const HomePage = () => {
+  const router = useRouter();
   const [selectedSnippet, setSelectedSnippet] = useState<Snippet | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -38,8 +40,6 @@ const HomePage = () => {
 
   const snippets = data?.snippets || [];
   const error = data?.error;
-
-  console.log({ isPending, data: snippets, error });
 
   useEffect(() => {
     document.documentElement.classList.add("dark");
@@ -71,10 +71,7 @@ const HomePage = () => {
           <p className="text-muted-foreground mb-4">
             We couldn&apos;t fetch the snippets at this time
           </p>
-          <Button onClick={() => {}}>
-            {/* <ArrowLeft className="h-4 w-4 mr-2" /> */}
-            Try again
-          </Button>
+          <Button onClick={() => router.refresh()}>Try again</Button>
         </div>
       </div>
     );

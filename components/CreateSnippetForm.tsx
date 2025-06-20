@@ -91,7 +91,6 @@ const CreateSnippetForm = () => {
           <ul>
             {state.issues.map((issue) => (
               <li key={issue} className="flex gap-1">
-                {/* <X fill="red" /> */}
                 {issue}
               </li>
             ))}
@@ -100,14 +99,9 @@ const CreateSnippetForm = () => {
       )}
       <form
         ref={createSnippetFormRef}
-        // action={formAction}
         onSubmit={(e) => {
           e.preventDefault();
           form.handleSubmit((formData) => formAction(formData))(e);
-          //   form.handleSubmit(() => {
-          //     console.log("submtting", createSnippetFormRef.current);
-          //     formAction(new FormData(createSnippetFormRef.current!));
-          //   })(e);
         }}
         className="space-y-4 mt-4"
       >
@@ -207,11 +201,6 @@ const CreateSnippetForm = () => {
         <Button
           type="submit"
           className="w-full font-semibold text-lg py-6 cursor-pointer mt-8"
-          //   onClick={(e) => {
-          //     e.preventDefault();
-          //     console.log("clicked");
-          //     form.handleSubmit(formAction);
-          //   }}
         >
           Submit
         </Button>

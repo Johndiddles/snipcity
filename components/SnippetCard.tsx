@@ -49,8 +49,7 @@ const SnippetCard = ({ snippet, onView }: SnippetCardProps) => {
         body: JSON.stringify({ voteType }),
       }).then((res) => res.json());
     },
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: () => {
       toast.success("Vote submitted successfully!");
       queryClient.refetchQueries({
         queryKey: [QUERY_KEYS.FETCH_SINGLE_SNIPPET, snippet._id],

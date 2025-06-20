@@ -30,8 +30,6 @@ const SnippetView = () => {
       }>,
   });
 
-  console.log({ data, isPending });
-
   useEffect(() => {
     document.documentElement.classList.add("dark");
   }, []);
@@ -59,8 +57,7 @@ const SnippetView = () => {
 
   const { snippet } = data;
 
-  const handleSnippetUpdated = (updatedSnippet: Snippet) => {
-    console.log({ updatedSnippet });
+  const handleSnippetUpdated = () => {
     toast.success("Snippet updated successfully!");
   };
 

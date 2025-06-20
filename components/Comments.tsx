@@ -18,8 +18,7 @@ const Comments = ({ snippet }: { snippet: Snippet }) => {
   const handleComment = async () => {
     if (!comment.trim()) return;
     try {
-      const response = await postComment(comment, snippet._id);
-      console.log({ response });
+      await postComment(comment, snippet._id);
       toast.success("Comment added!");
       setComment("");
       queryClient.refetchQueries({

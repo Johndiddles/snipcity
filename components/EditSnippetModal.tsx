@@ -43,17 +43,6 @@ const EditSnippetModal = ({
   const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState<string[]>(snippet.tags?.split(",") || []);
 
-  //   useEffect(() => {
-  //     if (snippet) {
-  //       setTitle(snippet.title || "");
-  //       setDescription(snippet.description || "");
-  //       setCode(snippet.code || "");
-  //       setLanguage(snippet.language || "");
-  //       setVisibility(snippet.isPrivate ? "private" : "public");
-  //       setTags(snippet.tags || []);
-  //     }
-  //   }, [snippet]);
-
   const handleAddTag = () => {
     if (tagInput.trim() && !tags.includes(tagInput.trim())) {
       setTags([...tags, tagInput.trim()]);
@@ -92,8 +81,6 @@ const EditSnippetModal = ({
   const handleClose = () => {
     onClose();
   };
-
-  console.log({ tags });
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>

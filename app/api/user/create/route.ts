@@ -6,19 +6,10 @@ export async function POST(req: Request) {
   await connectToDB();
 
   const payload = await req.json();
-  console.log({ payload });
 
   try {
     const { user, error } = await createUser(payload as CreateUserPayload);
-    // const user = await User.findOneAndUpdate(
-    //   { email: payload.email, authProvider: payload.authProvider },
-    //   payload,
-    //   {
-    //     upsert: true,
-    //   }
-    // );
 
-    // console.log({ user });
     if (error) {
       return Response.json({ error }, { status: 400 });
     }

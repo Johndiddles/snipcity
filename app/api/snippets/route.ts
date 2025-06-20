@@ -66,7 +66,6 @@ export async function POST(req: Request) {
   await connectToDB();
 
   const payload = await req.json();
-  console.log({ payload });
   const session = await auth();
 
   if (!session) {

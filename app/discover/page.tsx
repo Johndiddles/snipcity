@@ -12,7 +12,6 @@ const fetchSnippets = async () => {
 
 const DiscoverSnippets = async () => {
   const snippets = await fetchSnippets();
-  console.log(JSON.stringify(snippets, null, 2));
   return (
     <Container>
       <div className="py-5 md:py-8 lg:py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -10,11 +10,8 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  // console.log({ req });
   await connectToDB();
   const { id } = await params;
-  // console.log({ id });
-
   const user = await auth();
   try {
     const snippet = await Snippet.findById(id)

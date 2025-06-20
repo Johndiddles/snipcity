@@ -9,7 +9,6 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
   providers: [Github],
   callbacks: {
     async signIn({ user, profile }) {
-      // console.log({ profile });
       if (!user || !profile) {
         return false;
       }
@@ -27,9 +26,7 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
       });
 
       const data = await response.json();
-      console.log({ data });
       const { user: updatedUser, error } = data;
-      console.log({ updatedUser, error });
 
       // const { user: updatedUser, error } = await createUser(
       //   userToDb as CreateUserPayload
@@ -40,7 +37,6 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
         return `/signin/error?error=${error}`;
       }
 
-      // console.log({ updatedUser });
       user.id = updatedUser!._id?.toString();
       user.image = updatedUser?.profileImage;
       user.name = updatedUser?.username;

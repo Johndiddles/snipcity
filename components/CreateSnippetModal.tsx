@@ -59,7 +59,6 @@ const CreateSnippetModal = ({ isOpen, onClose }: CreateSnippetModalProps) => {
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: async (data: CreateSnippetFormType) => {
-      console.log("mutating", data);
       return await fetch("/api/snippets", {
         method: "POST",
         body: JSON.stringify(data),
@@ -86,7 +85,6 @@ const CreateSnippetModal = ({ isOpen, onClose }: CreateSnippetModalProps) => {
   });
 
   const onSubmit = async (data: CreateSnippetFormType) => {
-    console.log("submitting form", data);
     mutate({
       ...data,
       code: data.code.trim().toString(),
@@ -95,8 +93,6 @@ const CreateSnippetModal = ({ isOpen, onClose }: CreateSnippetModalProps) => {
       tags: data?.tags?.trim().toString(),
     });
   };
-
-  console.log({ isPending, error, formErrors: form.formState.errors });
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -286,11 +282,9 @@ const CreateSnippetModal = ({ isOpen, onClose }: CreateSnippetModalProps) => {
                 Cancel
               </Button>
               <Button
-                // type="submit"
                 disabled={isPending}
                 onClick={(e) => {
                   e.preventDefault();
-                  console.log("clicked", form.formState.errors);
 
                   form.handleSubmit(onSubmit)();
                 }}

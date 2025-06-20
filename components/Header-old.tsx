@@ -6,7 +6,6 @@ import Link from "next/link";
 
 const Header = async () => {
   const session = await auth();
-  console.log({ session });
   return (
     <div className="bg-slate-900 text-gray-200 w-full">
       <Container>
