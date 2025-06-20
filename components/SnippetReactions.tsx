@@ -45,7 +45,15 @@ const SnippetReactions = ({ snippet }: { snippet: Snippet }) => {
           <Upvote snippet={snippet} handleVote={handleVote} />
           <Downvote snippet={snippet} handleVote={handleVote} />
         </div>
-        <Button variant="ghost" size="sm" className="gap-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-2"
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+          }}
+        >
           <MessageCircle className="h-4 w-4" />
           {snippet.comments.length} comments
         </Button>

@@ -181,16 +181,15 @@ const SnippetCard = ({ snippet, onView }: SnippetCardProps) => {
               <Upvote snippet={snippet} handleVote={handleVote} />
               <Downvote snippet={snippet} handleVote={handleVote} />
             </div>
-            {/* <Button
+            <Button
               variant="ghost"
               size="sm"
-              className={`gap-1 ${isLiked ? "text-red-500" : ""}`}
-              onClick={handleVote}
+              className="gap-1"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+              }}
             >
-              <Heart className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
-              {votes}
-            </Button> */}
-            <Button variant="ghost" size="sm" className="gap-1">
               <MessageCircle className="h-4 w-4" />
               {snippet.comments?.length}
             </Button>

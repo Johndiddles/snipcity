@@ -53,8 +53,8 @@ const HomePage = () => {
 
     const matchesVisibility =
       filters.visibility === "all" ||
-      (filters.visibility === "public" && !snippet.isPublic) ||
-      (filters.visibility === "private" && snippet.isPublic);
+      (filters.visibility === "public" && snippet.isPublic) ||
+      (filters.visibility === "private" && !snippet.isPublic);
 
     return matchesLanguages && matchesVisibility;
   });
