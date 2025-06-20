@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import SnippetCard from "@/components/SnippetCard";
 import SnippetModal from "@/components/SnippetModal";
 import FilterSidebar from "@/components/FilterSidebar";
@@ -40,10 +40,6 @@ const HomePage = () => {
 
   const snippets = data?.snippets || [];
   const error = data?.error;
-
-  useEffect(() => {
-    document.documentElement.classList.add("dark");
-  }, []);
 
   const handleViewSnippet = (snippet: Snippet) => {
     setSelectedSnippet(snippet);

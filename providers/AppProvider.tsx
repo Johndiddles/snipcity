@@ -4,6 +4,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "next-auth/react";
+import { useEffect } from "react";
+import { initializeTheme } from "@/lib/theme";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -13,6 +15,9 @@ const queryClient = new QueryClient({
   },
 });
 const AppProvider = ({ children }: { children: React.ReactNode }) => {
+  useEffect(() => {
+    initializeTheme();
+  }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>

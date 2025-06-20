@@ -1,21 +1,26 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { initializeTheme } from "@/lib/theme";
 import { AlertTriangle, Home, RefreshCw } from "lucide-react";
+import { useEffect } from "react";
 
 // Error boundaries must be Client Components
 
 export default function GlobalError({
   error,
-  reset,
+  reset = () => (window.location.href = window.location.href),
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    initializeTheme();
+  }, []);
   return (
     <html>
       <body>
-        <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
+        <div className="min-h-screen flex items-center justify-center p-4 bg-background">
           <Card className="w-full max-w-md">
             <CardHeader className="text-center">
               <div className="flex justify-center mb-4">

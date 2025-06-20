@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ArrowLeft, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -29,10 +29,6 @@ const SnippetView = () => {
         snippet: Snippet;
       }>,
   });
-
-  useEffect(() => {
-    document.documentElement.classList.add("dark");
-  }, []);
 
   if (isPending) {
     return <SingleSnippetViewSkeleton />;
