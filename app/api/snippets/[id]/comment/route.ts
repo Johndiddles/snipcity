@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await connectToDB();
   const user = await auth();
@@ -18,7 +18,7 @@ export async function POST(
   }
 
   try {
-    const snippetId = params.id;
+    const { id: snippetId } = await params;
     const { comment } = await req.json();
 
     if (!comment) {

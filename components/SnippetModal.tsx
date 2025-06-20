@@ -1,16 +1,9 @@
-import { Heart, MessageCircle, Share, Copy } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useState } from "react";
-import { toast } from "sonner";
 import { Snippet } from "@/types/snippet";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
-import { comments } from "@/mockData/comments";
 import moment from "moment";
 import Comments from "./Comments";
+import CodeSection from "./CodeSection";
+import ProfileAvatar from "./Avatar";
 
 interface SnippetModalProps {
   snippet: Snippet;
@@ -19,27 +12,6 @@ interface SnippetModalProps {
 }
 
 const SnippetModal = ({ snippet, isOpen, onClose }: SnippetModalProps) => {
-  const tags = snippet?.tags?.split(",") || [];
-  const [isLiked, setIsLiked] = useState(false);
-  const [votes, setVotes] = useState(snippet?.upvotes || 0);
-
-  const handleVote = () => {
-    setIsLiked(!isLiked);
-    setVotes(isLiked ? votes - 1 : votes + 1);
-  };
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(snippet.code);
-    toast.success("Code copied to clipboard!");
-  };
-
-  const handleShare = () => {
-    navigator.clipboard.writeText(
-      `${window.location.origin}/snippets/${snippet._id}`
-    );
-    toast.success("Link copied to clipboard!");
-  };
-
   if (!snippet) return null;
 
   return (
@@ -59,12 +31,10 @@ const SnippetModal = ({ snippet, isOpen, onClose }: SnippetModalProps) => {
                 {snippet.description}
               </p>
               <div className="flex items-center gap-2 mt-3">
-                <Avatar className="h-6 w-6">
-                  <AvatarImage src={snippet.author.profileImage} />
-                  <AvatarFallback>
-                    {snippet.author.username.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
+                <ProfileAvatar
+                  name={snippet.author.username}
+                  image={snippet.author.profileImage}
+                />
                 <span className="text-sm text-muted-foreground">
                   {snippet.author.username}
                 </span>
@@ -78,63 +48,7 @@ const SnippetModal = ({ snippet, isOpen, onClose }: SnippetModalProps) => {
 
           <div className="w-full flex flex-col md:flex-row">
             {/* Code Section */}
-            <div className="min-w-0 w-full max-w-full flex-1 flex flex-col">
-              <div className="flex flex-wrap space-y-4 items-center justify-between p-4 border-b">
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary">{snippet.language}</Badge>
-                  {tags.map((tag: string) => (
-                    <Badge key={tag} variant="outline" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" onClick={handleCopy}>
-                    <Copy className="h-4 w-4 mr-2" />
-                    Copy
-                  </Button>
-                </div>
-              </div>
-
-              <div className="w-full">
-                <SyntaxHighlighter
-                  language={snippet.language.toLowerCase()}
-                  style={vscDarkPlus}
-                  showLineNumbers={true}
-                  wrapLines={true}
-                  wrapLongLines={true}
-                  className="w-full max-h-[320px] sm:max-h-[480px] lg:max-h-[640px]"
-                >
-                  {snippet.code}
-                </SyntaxHighlighter>
-              </div>
-
-              {/* Actions */}
-              <div className="flex items-center justify-between p-4 border-t">
-                <div className="flex items-center gap-4">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className={`gap-2 ${isLiked ? "text-red-500" : ""}`}
-                    onClick={handleVote}
-                  >
-                    <Heart
-                      className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`}
-                    />
-                    {votes} votes
-                  </Button>
-                  <Button variant="ghost" size="sm" className="gap-2">
-                    <MessageCircle className="h-4 w-4" />
-                    {comments.length} comments
-                  </Button>
-                </div>
-                <Button variant="ghost" size="sm" onClick={handleShare}>
-                  <Share className="h-4 w-4 mr-2" />
-                  Share
-                </Button>
-              </div>
-            </div>
-
+            <CodeSection snippet={snippet} />
             {/* Comments Section */}
             <Comments snippet={snippet} />
           </div>

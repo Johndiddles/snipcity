@@ -27,13 +27,19 @@ const HomePage = () => {
     sortBy: "newest",
   });
 
-  const { isPending, data: snippets = [] } = useQuery({
+  const { isPending, data } = useQuery({
     queryKey: [QUERY_KEYS.FETCH_ALL_SNIPPETS],
     queryFn: () =>
-      fetch("/api/snippets").then((res) => res.json()) as Promise<Snippet[]>,
+      fetch("/api/snippets").then((res) => res.json()) as Promise<{
+        snippets: Snippet[];
+        error?: string;
+      }>,
   });
 
-  console.log({ isPending, data: snippets });
+  const snippets = data?.snippets || [];
+  const error = data?.error;
+
+  console.log({ isPending, data: snippets, error });
 
   useEffect(() => {
     document.documentElement.classList.add("dark");
@@ -56,6 +62,23 @@ const HomePage = () => {
 
     return matchesLanguages && matchesVisibility;
   });
+
+  if (!!error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-2">Ooops!</h2>
+          <p className="text-muted-foreground mb-4">
+            We couldn&apos;t fetch the snippets at this time
+          </p>
+          <Button onClick={() => {}}>
+            {/* <ArrowLeft className="h-4 w-4 mr-2" /> */}
+            Try again
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">

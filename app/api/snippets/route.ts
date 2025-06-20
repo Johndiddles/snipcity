@@ -2,13 +2,12 @@ import { auth } from "@/auth";
 import { buildPaginatedFilter } from "@/db/buildFilters";
 import connectToDB from "@/db/connectToDb";
 import { createSnippet } from "@/db/models/createSnippet";
-import Snippet, { ISnippet } from "@/db/schema/Snippet";
-// import UserSchema from "@/db/schema/User";
+import Snippet from "@/db/schema/Snippet";
+import Vote from "@/db/schema/Vote";
 import { User } from "@/types/user";
 
 export async function GET() {
   const authUser = await auth();
-  // console.log({ authUser });
   await connectToDB();
 
   try {
@@ -16,7 +15,7 @@ export async function GET() {
       user: authUser?.user as User,
       query: {},
     });
-    const snippets: ISnippet[] = await Snippet.find(filter)
+    const snippets = await Snippet.find(filter)
       .populate({
         path: "author",
         select: "username email profileImage _id",
@@ -31,9 +30,27 @@ export async function GET() {
       .skip(options.skip)
       .limit(options.limit)
       .sort((options.sort as Record<string, 1 | -1>) || { createdAt: -1 });
-    return Response.json(snippets, {
-      status: 200,
-    });
+
+    const snippetsJSON = snippets.map((snippet) => snippet.toObject());
+
+    await Promise.all(
+      snippetsJSON.map(async (snippet, index) => {
+        const existingVote = await Vote.findOne({
+          snippet: snippet._id,
+          user: authUser?.user?.id,
+        });
+        if (existingVote) {
+          snippetsJSON[index].userVote = existingVote.voteType;
+        }
+      })
+    );
+
+    return Response.json(
+      { snippets: snippetsJSON },
+      {
+        status: 200,
+      }
+    );
   } catch (error) {
     console.log({ error });
     return Response.json(

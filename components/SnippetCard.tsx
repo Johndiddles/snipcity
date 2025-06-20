@@ -1,5 +1,4 @@
 import {
-  Heart,
   MessageCircle,
   Share,
   Lock,
@@ -16,19 +15,23 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
 import { toast } from "sonner";
 import { Snippet } from "@/types/snippet";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import Link from "next/link";
+import Upvote from "./Upvote";
+import Downvote from "./Downvote";
+import ProfileAvatar from "./Avatar";
+import moment from "moment";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/constants/queries";
 
 interface SnippetCardProps {
   snippet: Snippet;
@@ -36,14 +39,31 @@ interface SnippetCardProps {
 }
 
 const SnippetCard = ({ snippet, onView }: SnippetCardProps) => {
+  const queryClient = useQueryClient();
   const tags = snippet.tags?.split(",") || [];
-  const [isLiked, setIsLiked] = useState(false);
-  const [votes, setVotes] = useState<number>(snippet.upvotes);
 
-  const handleVote = () => {
-    setIsLiked(!isLiked);
-    setVotes(isLiked ? votes - 1 : votes + 1);
-  };
+  const { mutate: handleVote } = useMutation({
+    mutationFn: async (voteType: string) => {
+      return fetch(`/api/snippets/${snippet._id}/votes`, {
+        method: "POST",
+        body: JSON.stringify({ voteType }),
+      }).then((res) => res.json());
+    },
+    onSuccess: (data) => {
+      console.log(data);
+      toast.success("Vote submitted successfully!");
+      queryClient.refetchQueries({
+        queryKey: [QUERY_KEYS.FETCH_SINGLE_SNIPPET, snippet._id],
+      });
+      queryClient.refetchQueries({
+        queryKey: [QUERY_KEYS.FETCH_ALL_SNIPPETS],
+      });
+    },
+    onError: (error) => {
+      console.log(error);
+      toast.error("Failed to submit vote. Please try again.");
+    },
+  });
 
   const handleCopy = () => {
     navigator.clipboard.writeText(snippet.code);
@@ -101,18 +121,16 @@ const SnippetCard = ({ snippet, onView }: SnippetCardProps) => {
           </div>
 
           <div className="flex items-center gap-2 mt-3">
-            <Avatar className="h-6 w-6">
-              <AvatarImage src={snippet.author?.profileImage} />
-              <AvatarFallback>
-                {snippet.author?.username?.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
+            <ProfileAvatar
+              name={snippet.author.username}
+              image={snippet.author.profileImage}
+            />
             <span className="text-sm text-muted-foreground">
               {snippet.author.username}
             </span>
             <span className="text-xs text-muted-foreground">•</span>
             <span className="text-xs text-muted-foreground">
-              {/* {snippet.createdAt?.toISOString()} */}
+              {moment(snippet.createdAt).fromNow()}
             </span>
           </div>
         </CardHeader>
@@ -160,7 +178,11 @@ const SnippetCard = ({ snippet, onView }: SnippetCardProps) => {
 
         <CardFooter className="flex items-center justify-between pt-3">
           <div className="flex items-center gap-4">
-            <Button
+            <div className="flex items-center">
+              <Upvote snippet={snippet} handleVote={handleVote} />
+              <Downvote snippet={snippet} handleVote={handleVote} />
+            </div>
+            {/* <Button
               variant="ghost"
               size="sm"
               className={`gap-1 ${isLiked ? "text-red-500" : ""}`}
@@ -168,7 +190,7 @@ const SnippetCard = ({ snippet, onView }: SnippetCardProps) => {
             >
               <Heart className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
               {votes}
-            </Button>
+            </Button> */}
             <Button variant="ghost" size="sm" className="gap-1">
               <MessageCircle className="h-4 w-4" />
               {snippet.comments?.length}

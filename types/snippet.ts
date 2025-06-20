@@ -16,6 +16,7 @@ export type Snippet = {
   comments: Comment[];
   upvotes: number;
   downvotes: number;
+  userVote: "upvote" | "downvote" | null;
   tags?: string;
   createdAt: Date;
   updatedAt: Date;

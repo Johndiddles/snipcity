@@ -5,7 +5,7 @@ import { ISnippet } from "./Snippet";
 export interface IVote extends Document {
   snippet: ISnippet["_id"];
   user: IUser["_id"] | IUser;
-  voteType: "upvote" | "downvote";
+  voteType: "upvote" | "downvote" | null;
 }
 
 const voteSchema: Schema<IVote> = new Schema(

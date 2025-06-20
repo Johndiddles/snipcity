@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { IUser } from "./User";
-import { IComment } from "./Comment";
+import User, { IUser } from "./User";
+import Comment, { IComment } from "./Comment";
 
 export interface ISnippet extends Document {
   title: string;
@@ -28,8 +28,11 @@ const snippetSchema: Schema<ISnippet> = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      model: User,
     },
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+    comments: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Comment", model: Comment },
+    ],
     tags: { type: String },
     upvotes: { type: Number, default: 0 },
     downvotes: { type: Number, default: 0 },
