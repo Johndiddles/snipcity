@@ -17,16 +17,14 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import SnippetSearch from "./SnippetSearch";
 import { logout } from "@/lib/auth";
 import UserAvatar from "./UserAvatar";
+import { useTheme } from "@/hooks/useTheme";
 
 const NavActions = () => {
   const { data: session } = useSession();
-  const [isDark, setIsDark] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const toggleTheme = () => {
-    setIsDark((prev) => !prev);
-    document.documentElement.classList.toggle("dark");
-  };
+  const { isDark, toggleTheme } = useTheme();
+
   return (
     <>
       {/* Desktop Actions */}

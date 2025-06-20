@@ -27,7 +27,7 @@ const Upvote = ({
         className={`h-4 w-4 ${
           snippet.userVote === "upvote" ? "text-green-600" : "text-green-500"
         }`}
-        fill={`${snippet.userVote === "upvote" ? "currentColor" : undefined}`}
+        fill={`${snippet.userVote === "upvote" ? "currentColor" : "#00000000"}`}
       />
       <span>{snippet.upvotes}</span>
     </Button>

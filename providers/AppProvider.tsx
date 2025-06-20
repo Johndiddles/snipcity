@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "next-auth/react";
 import { useEffect } from "react";
-import { initializeTheme } from "@/lib/theme";
+import { useTheme } from "@/hooks/useTheme";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,9 +15,10 @@ const queryClient = new QueryClient({
   },
 });
 const AppProvider = ({ children }: { children: React.ReactNode }) => {
+  const { initializeTheme } = useTheme();
   useEffect(() => {
     initializeTheme();
-  }, []);
+  }, [initializeTheme]);
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
