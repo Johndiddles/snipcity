@@ -11,7 +11,7 @@ export function generateExtensionToken(user: { id: string; email: string }) {
     },
     JWT_SECRET,
     {
-      expiresIn: "30d",
+      expiresIn: "90d",
       issuer: "snippit-app",
       audience: "vscode-client",
     }

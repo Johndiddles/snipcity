@@ -1,4 +1,5 @@
 export const languages: string[] = [
+  "Plain Text",
   "JavaScript",
   "TypeScript",
   "Python",

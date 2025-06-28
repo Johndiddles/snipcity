@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     authUser = verifyExtensionToken(token);
   } catch (error) {
     console.log({ error });
-    return Response.json({ error: "Invalid token" }, { status: 401 });
+    // return Response.json({ error: "Invalid token" }, { status: 401 });
   }
 
   try {

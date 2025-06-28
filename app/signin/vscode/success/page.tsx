@@ -14,7 +14,9 @@ const VscodeExtensionSigninSuccessPage = async () => {
   console.log({ token });
 
   if (token) {
-    redirect(`vscode://johndiddles.snippit-vscode?token=${token}`);
+    redirect(
+      `vscode://johndiddles.snippit-vscode?token=${token}&email=${authUser?.user?.email}&id=${authUser?.user?.id}&username=${authUser?.user?.name}`
+    );
   }
 
   return (
