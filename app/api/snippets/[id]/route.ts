@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import connectToDB from "@/db/connectToDb";
+import { updateSnippet } from "@/db/models/updateSnippet";
 import Snippet from "@/db/schema/Snippet";
 import { IUser } from "@/db/schema/User";
 import Vote, { IVote } from "@/db/schema/Vote";
@@ -54,6 +55,42 @@ export async function GET(
     console.log({ error });
     return Response.json(
       { error: "Error fetching snippets" },
+      {
+        status: 500,
+      }
+    );
+  }
+}
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  await connectToDB();
+
+  const { id } = await params;
+
+  const payload = await req.json();
+  const session = await auth();
+
+  if (!session) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    if (!!payload.author) delete payload.author;
+
+    const snippet = await updateSnippet(id, {
+      ...payload,
+      code: payload.code.trim().toString(),
+    });
+    return Response.json(snippet, {
+      status: 201,
+    });
+  } catch (error) {
+    console.log({ error });
+    return Response.json(
+      { error: "Error creating snippet" },
       {
         status: 500,
       }

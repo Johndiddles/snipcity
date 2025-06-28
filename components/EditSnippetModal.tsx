@@ -21,12 +21,15 @@ import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { languages } from "@/mockData/languages";
 import { Snippet } from "@/types/snippet";
+import { CreateSnippetPayload } from "@/db/models/createSnippet";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/constants/queries";
 
 interface EditSnippetModalProps {
   snippet: Snippet;
   isOpen: boolean;
   onClose: () => void;
-  onSnippetUpdated: (snippet: Snippet) => void;
+  onSnippetUpdated?: () => void;
 }
 
 const EditSnippetModal = ({
@@ -35,6 +38,7 @@ const EditSnippetModal = ({
   onClose,
   onSnippetUpdated,
 }: EditSnippetModalProps) => {
+  const queryClient = useQueryClient();
   const [title, setTitle] = useState(snippet.title || "");
   const [description, setDescription] = useState(snippet.description || "");
   const [code, setCode] = useState(snippet.code || "");
@@ -61,21 +65,41 @@ const EditSnippetModal = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { mutate: updateSnippet, isPending: isUpdatingSnippet } = useMutation({
+    mutationFn: async (data: Omit<CreateSnippetPayload, "author">) => {
+      const response = await fetch(`/api/snippets/${snippet._id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      });
+
+      return response.json();
+    },
+    onSuccess: () => {
+      onSnippetUpdated?.();
+      queryClient.refetchQueries({
+        queryKey: [QUERY_KEYS.FETCH_SINGLE_SNIPPET, snippet._id],
+      });
+      queryClient.refetchQueries({
+        queryKey: [QUERY_KEYS.FETCH_ALL_SNIPPETS],
+      });
+      onClose();
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const updatedSnippet = {
-      ...snippet,
       title,
       description,
       code,
       language,
       isPublic: visibility === "isPublic",
       tags: tags.join(", "),
+      // author: snippet.author._id,
     };
 
-    onSnippetUpdated(updatedSnippet);
-    onClose();
+    updateSnippet(updatedSnippet);
   };
 
   const handleClose = () => {
@@ -215,7 +239,9 @@ const EditSnippetModal = ({
                 <Button type="button" variant="outline" onClick={handleClose}>
                   Cancel
                 </Button>
-                <Button type="submit">Update Snippet</Button>
+                <Button disabled={isUpdatingSnippet} type="submit">
+                  Update Snippet
+                </Button>
               </div>
             </form>
           </div>
