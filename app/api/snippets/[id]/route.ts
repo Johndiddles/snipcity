@@ -73,14 +73,14 @@ export async function PATCH(
   const payload = await req.json();
   const session = await auth();
 
-  if (!session) {
+  if (!session || !session?.user) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
     if (!!payload.author) delete payload.author;
 
-    const snippet = await updateSnippet(id, {
+    const snippet = await updateSnippet(id, session?.user?.id as string, {
       ...payload,
       code: payload.code.trim().toString(),
     });
@@ -90,7 +90,7 @@ export async function PATCH(
   } catch (error) {
     console.log({ error });
     return Response.json(
-      { error: "Error creating snippet" },
+      { error: "Error updating snippet" },
       {
         status: 500,
       }
