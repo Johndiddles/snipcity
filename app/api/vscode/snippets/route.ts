@@ -11,30 +11,18 @@ import { NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
 
-  // if (!authHeader) {
-  //   return Response.json(
-  //     { error: "Authorization header missing" },
-  //     { status: 401 }
-  //   );
-  // }
-
   await connectToDB();
 
   const token = authHeader?.startsWith("Bearer ")
     ? authHeader.substring(7, authHeader.length)
     : "";
-
-  // if (!token) {
-  //   return Response.json({ error: "Bearer token missing" }, { status: 401 });
-  // }
-
   let authUser: { id: string; email: string } | undefined;
 
   try {
     authUser = verifyExtensionToken(token);
   } catch (error) {
     console.log({ error });
-    // return Response.json({ error: "Invalid token" }, { status: 401 });
+    return Response.json({ error: "Invalid token" }, { status: 401 });
   }
 
   try {
