@@ -77,7 +77,7 @@ const NavActions = () => {
             </Button>
           </SheetTrigger>
           <SheetContent side="right" className="w-72">
-            <div className="flex flex-col gap-4 mt-4">
+            <div className="flex flex-col gap-4 mt-8 sm:mt-5">
               {/* Mobile Search */}
               <SnippetSearch />
 
