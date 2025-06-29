@@ -7,14 +7,10 @@ import Vote from "@/db/schema/Vote";
 import { User } from "@/types/user";
 import { NextRequest } from "next/server";
 
-export async function GET(
-  req: NextRequest,
-  nextUrl: { searchParams: URLSearchParams }
-) {
+export async function GET(req: NextRequest) {
   const authUser = await auth();
   await connectToDB();
 
-  console.log({ nextUrl });
   try {
     const reqPage = req.nextUrl.searchParams.get("page");
     const reqLimit = req.nextUrl.searchParams.get("limit");
@@ -63,15 +59,6 @@ export async function GET(
     const limit = options.limit;
 
     const totalPages = Math.ceil(snippetsCount / limit);
-    // return {
-    //   snippets: snippets,
-    //   currentPage: page,
-    //   totalPages,
-    //   totalItems: snippetsCount,
-    //   itemsPerPage: limit,
-    //   hasNextPage: page < totalPages,
-    //   hasPrevPage: page > 1,
-    // };
 
     return Response.json(
       {
