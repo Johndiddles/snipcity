@@ -26,25 +26,35 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const reqPage = request.nextUrl.searchParams.get("page");
+    const reqLimit = request.nextUrl.searchParams.get("limit");
+
+    const page = reqPage ? Number(reqPage) : 1;
     const { filter, options } = buildPaginatedFilter({
       user: !!authUser ? (authUser as User) : undefined,
-      query: {},
+      query: {
+        page,
+        limit: reqLimit ? Number(reqLimit) : 10,
+      },
     });
-    const snippets = await Snippet.find(filter)
-      .populate({
-        path: "author",
-        select: "username email profileImage _id",
-      })
-      .populate({
-        path: "comments",
-        populate: {
+    const [snippets, snippetsCount] = await Promise.all([
+      await Snippet.find(filter)
+        .populate({
           path: "author",
           select: "username email profileImage _id",
-        },
-      })
-      .skip(options.skip)
-      .limit(options.limit)
-      .sort((options.sort as Record<string, 1 | -1>) || { createdAt: -1 });
+        })
+        .populate({
+          path: "comments",
+          populate: {
+            path: "author",
+            select: "username email profileImage _id",
+          },
+        })
+        .skip(options.skip)
+        .limit(options.limit)
+        .sort((options.sort as Record<string, 1 | -1>) || { createdAt: -1 }),
+      await Snippet.countDocuments(filter),
+    ]);
 
     const snippetsJSON = snippets.map((snippet) => snippet.toObject());
 
@@ -60,8 +70,20 @@ export async function GET(request: NextRequest) {
       })
     );
 
+    const limit = options.limit;
+
+    const totalPages = Math.ceil(snippetsCount / limit);
+
     return Response.json(
-      { snippets: snippetsJSON },
+      {
+        snippets: snippetsJSON,
+        currentPage: page,
+        totalPages,
+        totalItems: snippetsCount,
+        itemsPerPage: limit,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
       {
         status: 200,
       }

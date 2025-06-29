@@ -5,31 +5,46 @@ import { createSnippet } from "@/db/models/createSnippet";
 import Snippet from "@/db/schema/Snippet";
 import Vote from "@/db/schema/Vote";
 import { User } from "@/types/user";
+import { NextRequest } from "next/server";
 
-export async function GET() {
+export async function GET(
+  req: NextRequest,
+  nextUrl: { searchParams: URLSearchParams }
+) {
   const authUser = await auth();
   await connectToDB();
 
+  console.log({ nextUrl });
   try {
+    const reqPage = req.nextUrl.searchParams.get("page");
+    const reqLimit = req.nextUrl.searchParams.get("limit");
+
+    const page = reqPage ? Number(reqPage) : 1;
     const { filter, options } = buildPaginatedFilter({
       user: authUser?.user as User,
-      query: {},
+      query: {
+        page,
+        limit: reqLimit ? Number(reqLimit) : 10,
+      },
     });
-    const snippets = await Snippet.find(filter)
-      .populate({
-        path: "author",
-        select: "username email profileImage _id",
-      })
-      .populate({
-        path: "comments",
-        populate: {
+    const [snippets, snippetsCount] = await Promise.all([
+      await Snippet.find(filter)
+        .populate({
           path: "author",
           select: "username email profileImage _id",
-        },
-      })
-      .skip(options.skip)
-      .limit(options.limit)
-      .sort((options.sort as Record<string, 1 | -1>) || { createdAt: -1 });
+        })
+        .populate({
+          path: "comments",
+          populate: {
+            path: "author",
+            select: "username email profileImage _id",
+          },
+        })
+        .skip(options.skip)
+        .limit(options.limit)
+        .sort((options.sort as Record<string, 1 | -1>) || { createdAt: -1 }),
+      await Snippet.countDocuments(filter),
+    ]);
 
     const snippetsJSON = snippets.map((snippet) => snippet.toObject());
 
@@ -45,8 +60,29 @@ export async function GET() {
       })
     );
 
+    const limit = options.limit;
+
+    const totalPages = Math.ceil(snippetsCount / limit);
+    // return {
+    //   snippets: snippets,
+    //   currentPage: page,
+    //   totalPages,
+    //   totalItems: snippetsCount,
+    //   itemsPerPage: limit,
+    //   hasNextPage: page < totalPages,
+    //   hasPrevPage: page > 1,
+    // };
+
     return Response.json(
-      { snippets: snippetsJSON },
+      {
+        snippets: snippetsJSON,
+        currentPage: page,
+        totalPages,
+        totalItems: snippetsCount,
+        itemsPerPage: limit,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
       {
         status: 200,
       }
