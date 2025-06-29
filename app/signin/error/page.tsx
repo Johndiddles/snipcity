@@ -1,6 +1,6 @@
 "use client";
 import { Suspense } from "react";
-import SignInErrorScreen from "@/components/SigninErrorPage/SigninErrorScreen";
+import SignInErrorScreen from "@/components/Screens/SigninErrorScreen";
 
 const SignInErrorPage = () => {
   return (
