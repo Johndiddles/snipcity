@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import SnippetCard from "@/components/SnippetCard";
 import SnippetModal from "@/components/SnippetModal";
 import FilterSidebar from "@/components/FilterSidebar";
@@ -8,10 +8,20 @@ import { Grid, List, Filter } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Container from "../Container";
 import { Snippet } from "@/types/snippet";
-import { useQuery } from "@tanstack/react-query";
-import SkeletonLoader from "../SkeletonLoader";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import SkeletonLoader, { SkeletonLoaderCard } from "../SkeletonLoader";
 import { QUERY_KEYS } from "@/constants/queries";
 import { useRouter } from "next/navigation";
+
+interface PaginatedSnippets {
+  currentPage: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  itemsPerPage: number;
+  snippets: Snippet[];
+  totalItems: number;
+  totalPages: number;
+}
 
 const HomePage = () => {
   const router = useRouter();
@@ -29,17 +39,23 @@ const HomePage = () => {
     sortBy: "newest",
   });
 
-  const { isPending, data } = useQuery({
-    queryKey: [QUERY_KEYS.FETCH_ALL_SNIPPETS],
-    queryFn: () =>
-      fetch("/api/snippets").then((res) => res.json()) as Promise<{
-        snippets: Snippet[];
-        error?: string;
-      }>,
-  });
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  const snippets = data?.snippets || [];
-  const error = data?.error;
+  const { isPending, data, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: [QUERY_KEYS.FETCH_ALL_SNIPPETS],
+      queryFn: ({ pageParam }) =>
+        fetch(`/api/snippets?page=${pageParam}&limit=10`).then((res) =>
+          res.json()
+        ) as Promise<PaginatedSnippets & { error?: string }>,
+      getNextPageParam: (lastPage) => {
+        return lastPage.hasNextPage ? lastPage.currentPage + 1 : undefined;
+      },
+      initialPageParam: 1,
+    });
+
+  const snippets = data?.pages.flatMap((page) => page.snippets) || [];
+  const error = data?.pages.at(-1)?.error;
 
   const handleViewSnippet = (snippet: Snippet) => {
     setSelectedSnippet(snippet);
@@ -58,6 +74,20 @@ const HomePage = () => {
 
     return matchesLanguages && matchesVisibility;
   });
+
+  useEffect(() => {
+    if (!loadMoreRef.current || !hasNextPage) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasNextPage) {
+        fetchNextPage();
+      }
+    });
+
+    observer.observe(loadMoreRef.current);
+
+    return () => observer.disconnect();
+  }, [hasNextPage, fetchNextPage]);
 
   if (!!error) {
     return (
@@ -152,13 +182,23 @@ const HomePage = () => {
                       : "space-y-4"
                   }
                 >
-                  {filteredSnippets.map((snippet) => (
-                    <SnippetCard
-                      key={snippet._id}
-                      snippet={snippet}
-                      onView={handleViewSnippet}
-                    />
-                  ))}
+                  {filteredSnippets
+                    .map((snippet) => (
+                      <SnippetCard
+                        key={snippet._id}
+                        snippet={snippet}
+                        onView={handleViewSnippet}
+                      />
+                    ))
+                    ?.concat(
+                      isFetchingNextPage ? (
+                        [1, 2, 3]?.map((i) => (
+                          <SkeletonLoaderCard key={`more-${i}`} />
+                        ))
+                      ) : (
+                        <Fragment key="empty-item"></Fragment>
+                      )
+                    )}
                 </div>
               )}
 
@@ -170,6 +210,9 @@ const HomePage = () => {
                   </div>
                 </div>
               )}
+
+              <div ref={loadMoreRef} className="h-12" />
+              {/* {isFetchingNextPage && <SkeletonLoader />} */}
             </div>
           </div>
         </div>
