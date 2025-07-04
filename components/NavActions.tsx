@@ -18,6 +18,7 @@ import SnippetSearch from "./SnippetSearch";
 import { logout } from "@/lib/auth";
 import UserAvatar from "./UserAvatar";
 import { useTheme } from "@/hooks/useTheme";
+import Link from "next/link";
 
 const NavActions = () => {
   const { data: session } = useSession();
@@ -48,8 +49,10 @@ const NavActions = () => {
                 Profile
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <BiLogoGithub className="mr-2 h-4 w-4" />
-                My Snippets
+                <Link href={"/profile/snippets"} className="flex ">
+                  <BiLogoGithub className="mr-2 h-4 w-4" />
+                  My Snippets
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>

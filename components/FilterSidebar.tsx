@@ -4,6 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { languages } from "@/mockData/languages";
 
 type Filters = {
   languages: string[];
@@ -16,19 +17,6 @@ interface FilterSidebarProps {
 }
 
 const FilterSidebar = ({ filters, onFiltersChange }: FilterSidebarProps) => {
-  const languages = [
-    "JavaScript",
-    "TypeScript",
-    "Python",
-    "Java",
-    "C++",
-    "React",
-    "Vue",
-    "Angular",
-    "Node.js",
-    "PHP",
-  ];
-
   const handleLanguageChange = (language: string, checked: boolean) => {
     const newLanguages = checked
       ? [...filters.languages, language]
@@ -148,6 +136,7 @@ const FilterSidebar = ({ filters, onFiltersChange }: FilterSidebarProps) => {
                 Most Popular
               </Label>
             </div>
+
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="author" id="author" />
               <Label
