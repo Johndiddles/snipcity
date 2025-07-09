@@ -14,7 +14,7 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
       }
       const userToDb: CreateUserPayload = {
         user_provider_id: profile.id!,
-        username: profile.name!,
+        username: (profile.login as string) || profile.name!,
         email: profile.email!,
         authProvider: "github",
         profileImage: (profile.avatar_url as string) || "",

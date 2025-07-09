@@ -19,12 +19,20 @@ import { logout } from "@/lib/auth";
 import UserAvatar from "./UserAvatar";
 import { useTheme } from "@/hooks/useTheme";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const NavActions = () => {
+  const router = useRouter();
   const { data: session } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const { isDark, toggleTheme } = useTheme();
+
+  const onLogout = async () => {
+    logout();
+    console.log("logged out");
+    router.refresh();
+  };
 
   return (
     <>
@@ -56,7 +64,7 @@ const NavActions = () => {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Button variant={"ghost"} onClick={() => logout()}>
+                <Button variant={"ghost"} onClick={onLogout}>
                   Sign out
                 </Button>
               </DropdownMenuItem>
@@ -123,7 +131,7 @@ const NavActions = () => {
                   <Button
                     variant="outline"
                     className="justify-start gap-2 text-destructive"
-                    onClick={() => logout()}
+                    onClick={onLogout}
                   >
                     Log out
                   </Button>

@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import AppProvider from "@/providers/AppProvider";
 import { Analytics } from "@vercel/analytics/next";
+import Footer from "@/components/Footer";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -32,6 +33,7 @@ export default function RootLayout({
         <AppProvider>
           <Header />
           {children}
+          <Footer />
         </AppProvider>
         <Analytics />
       </body>
